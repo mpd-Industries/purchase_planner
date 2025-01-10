@@ -1,0 +1,96 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:material_code",
+ "creation": "2025-01-10 01:19:07.150603",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "material_code",
+  "material_name",
+  "lead_time",
+  "safety_stock",
+  "reorder_quantity_kg",
+  "raw_material",
+  "product"
+ ],
+ "fields": [
+  {
+   "fieldname": "material_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Material Code",
+   "not_nullable": 1,
+   "placeholder": "Add name of material code",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "lead_time",
+   "fieldtype": "Int",
+   "label": "Lead Time (days)",
+   "non_negative": 1,
+   "placeholder": "enter number of days the material takes to be bought",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "safety_stock",
+   "fieldtype": "Data",
+   "label": "Safety Stock (Kg)",
+   "placeholder": " kg of safety stock for material",
+   "reqd": 1
+  },
+  {
+   "fieldname": "material_name",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "label": "Material Name"
+  },
+  {
+   "default": "0",
+   "fieldname": "raw_material",
+   "fieldtype": "Check",
+   "label": "Raw Material"
+  },
+  {
+   "default": "0",
+   "fieldname": "product",
+   "fieldtype": "Check",
+   "label": "Product"
+  },
+  {
+   "fieldname": "reorder_quantity_kg",
+   "fieldtype": "Data",
+   "label": "Reorder Quantity (Kg)",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-01-10 05:10:45.181428",
+ "modified_by": "Administrator",
+ "module": "Purchase Planner",
+ "name": "Material",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "material_code"
+}

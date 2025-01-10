@@ -1,0 +1,43 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "autoincrement",
+ "creation": "2025-01-10 03:24:43.812657",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "material_code",
+  "quantity_kg"
+ ],
+ "fields": [
+  {
+   "fieldname": "material_code",
+   "fieldtype": "Link",
+   "label": "Material Code",
+   "options": "Material",
+   "reqd": 1
+  },
+  {
+   "fieldname": "quantity_kg",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Quantity (KG)",
+   "non_negative": 1,
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-01-10 03:34:25.442652",
+ "modified_by": "Administrator",
+ "module": "Purchase Planner",
+ "name": "formulation_ratio",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

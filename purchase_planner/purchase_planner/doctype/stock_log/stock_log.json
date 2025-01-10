@@ -1,0 +1,59 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "UUID",
+ "creation": "2025-01-10 01:40:25.738496",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "material_code",
+  "stock_kg",
+  "date_and_time"
+ ],
+ "fields": [
+  {
+   "fieldname": "material_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Material Code",
+   "options": "Material",
+   "reqd": 1
+  },
+  {
+   "fieldname": "stock_kg",
+   "fieldtype": "Data",
+   "label": "Stock (Kg)"
+  },
+  {
+   "fieldname": "date_and_time",
+   "fieldtype": "Datetime",
+   "label": "Date and time "
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-01-10 04:00:51.814730",
+ "modified_by": "Administrator",
+ "module": "Purchase Planner",
+ "name": "Stock Log",
+ "naming_rule": "UUID",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
