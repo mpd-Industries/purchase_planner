@@ -13,7 +13,9 @@
   "safety_stock",
   "reorder_quantity_kg",
   "raw_material",
-  "product"
+  "product",
+  "import",
+  "lead_time_import"
  ],
  "fields": [
   {
@@ -22,11 +24,12 @@
    "in_list_view": 1,
    "label": "Material Code",
    "not_nullable": 1,
-   "placeholder": "Add name of material code",
+   "placeholder": "material code",
    "reqd": 1,
    "unique": 1
   },
   {
+   "default": "7",
    "fieldname": "lead_time",
    "fieldtype": "Int",
    "label": "Lead Time (days)",
@@ -52,24 +55,37 @@
    "default": "0",
    "fieldname": "raw_material",
    "fieldtype": "Check",
-   "label": "Raw Material"
+   "label": "Purchased"
   },
   {
    "default": "0",
+   "description": "can be produced internally",
    "fieldname": "product",
    "fieldtype": "Check",
-   "label": "Product"
+   "label": "Produced"
   },
   {
    "fieldname": "reorder_quantity_kg",
    "fieldtype": "Data",
    "label": "Reorder Quantity (Kg)",
    "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "import",
+   "fieldtype": "Check",
+   "label": "import"
+  },
+  {
+   "depends_on": "eval:doc.import;",
+   "fieldname": "lead_time_import",
+   "fieldtype": "Int",
+   "label": "Lead Time (Import)"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-10 05:10:45.181428",
+ "modified": "2025-01-10 12:02:08.526753",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Material",
