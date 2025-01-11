@@ -1,24 +1,62 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "format:{timestamp}-{#####}",
  "creation": "2025-01-10 08:58:38.600955",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "section_break_vauy"
+  "section_break_vauy",
+  "amended_from",
+  "stock_inventory",
+  "timestamp",
+  "batches"
  ],
  "fields": [
   {
    "fieldname": "section_break_vauy",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Production Plan",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "default": "Now",
+   "fieldname": "timestamp",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Timestamp",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "batches",
+   "fieldtype": "Table",
+   "label": "Batches",
+   "options": "Batch Plan"
+  },
+  {
+   "fieldname": "stock_inventory",
+   "fieldtype": "Link",
+   "label": "Stock Inventory",
+   "options": "Day Stock"
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2025-01-10 08:58:38.600955",
+ "modified": "2025-01-11 13:43:02.093993",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Production Plan",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

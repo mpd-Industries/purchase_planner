@@ -12,6 +12,7 @@
   "lead_time",
   "safety_stock",
   "reorder_quantity_kg",
+  "unit_of_measure",
   "raw_material",
   "product",
   "import",
@@ -81,11 +82,19 @@
    "fieldname": "lead_time_import",
    "fieldtype": "Int",
    "label": "Lead Time (Import)"
+  },
+  {
+   "default": "Kg",
+   "fieldname": "unit_of_measure",
+   "fieldtype": "Data",
+   "label": "Unit of Measure",
+   "options": "Kg\nUnit",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-10 12:02:08.526753",
+ "modified": "2025-01-11 12:32:29.684448",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Material",

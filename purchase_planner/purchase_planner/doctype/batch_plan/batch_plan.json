@@ -1,23 +1,51 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-01-10 08:59:04.264271",
+ "creation": "2025-01-11 13:13:19.149555",
  "doctype": "DocType",
- "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "section_break_8kua"
+  "date",
+  "reactor",
+  "material",
+  "batch_size",
+  "processing_time"
  ],
  "fields": [
   {
-   "fieldname": "section_break_8kua",
-   "fieldtype": "Section Break"
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "reactor",
+   "fieldtype": "Link",
+   "label": "Reactor",
+   "options": "Reactor"
+  },
+  {
+   "fieldname": "material",
+   "fieldtype": "Link",
+   "label": "Material",
+   "link_filters": "[[\"Material\",\"product\",\"=\",1]]",
+   "options": "Material"
+  },
+  {
+   "fetch_from": "reactor.size",
+   "fieldname": "batch_size",
+   "fieldtype": "Data",
+   "label": "Batch Size (Kg)"
+  },
+  {
+   "fieldname": "processing_time",
+   "fieldtype": "Int",
+   "label": "Processing Time (Hours)"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-10 08:59:04.264271",
+ "modified": "2025-01-11 13:22:40.184260",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Batch Plan",
