@@ -8,7 +8,8 @@
  "field_order": [
   "material_code",
   "material_name",
-  "stock_kg"
+  "stock",
+  "unit"
  ],
  "fields": [
   {
@@ -20,22 +21,29 @@
    "reqd": 1
   },
   {
-   "fieldname": "stock_kg",
-   "fieldtype": "Data",
-   "label": "Stock (Kg)"
-  },
-  {
    "fetch_from": "material_code.material_name",
    "fieldname": "material_name",
    "fieldtype": "Data",
    "label": "Material Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "stock",
+   "fieldtype": "Float",
+   "label": "Stock"
+  },
+  {
+   "fieldname": "unit",
+   "fieldtype": "Select",
+   "label": "Unit",
+   "options": "kg\nnos",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-11 12:37:59.893107",
+ "modified": "2025-01-13 14:09:34.722073",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Stock Log",

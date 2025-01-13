@@ -27,12 +27,13 @@
   {
    "fieldname": "table_fpim",
    "fieldtype": "Table",
+   "label": "Stock for the day",
    "options": "Stock Log"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-11 13:08:05.260210",
+ "modified": "2025-01-13 14:08:13.617094",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Day Stock",

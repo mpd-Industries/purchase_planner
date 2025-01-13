@@ -8,9 +8,10 @@
  "engine": "InnoDB",
  "field_order": [
   "formulation_id",
-  "material_id",
   "batch_size",
-  "formulation"
+  "formulation",
+  "packaging_code",
+  "amount_used"
  ],
  "fields": [
   {
@@ -22,17 +23,11 @@
    "unique": 1
   },
   {
-   "fieldname": "material_id",
-   "fieldtype": "Link",
-   "label": "Material ID",
-   "options": "Material",
-   "reqd": 1
-  },
-  {
    "fieldname": "batch_size",
-   "fieldtype": "Data",
-   "label": "Batch Size (KG)",
+   "fieldtype": "Float",
+   "label": "Batch Size",
    "placeholder": "default batch size for this formulation",
+   "precision": "2",
    "reqd": 1
   },
   {
@@ -40,11 +35,24 @@
    "fieldtype": "Table",
    "label": "Formulation",
    "options": "formulation_ratio"
+  },
+  {
+   "fieldname": "packaging_code",
+   "fieldtype": "Link",
+   "label": "Packaging Code",
+   "link_filters": "[[\"Material\",\"packaging\",\"=\",1]]",
+   "options": "Material"
+  },
+  {
+   "description": "amount used for the this batch size",
+   "fieldname": "amount_used",
+   "fieldtype": "Float",
+   "label": "Amount Used"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-10 04:00:28.832932",
+ "modified": "2025-01-13 12:22:52.808281",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Formulation",

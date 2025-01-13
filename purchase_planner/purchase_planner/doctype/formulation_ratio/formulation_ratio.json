@@ -20,17 +20,17 @@
   },
   {
    "fieldname": "quantity_kg",
-   "fieldtype": "Int",
+   "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Quantity (KG)",
-   "non_negative": 1,
+   "label": "Quantity",
+   "precision": "2",
    "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-10 03:34:25.442652",
+ "modified": "2025-01-13 12:30:48.612080",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "formulation_ratio",

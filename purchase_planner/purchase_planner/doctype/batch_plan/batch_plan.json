@@ -27,7 +27,6 @@
    "fieldname": "material",
    "fieldtype": "Link",
    "label": "Material",
-   "link_filters": "[[\"Material\",\"product\",\"=\",1]]",
    "options": "Material"
   },
   {
@@ -45,7 +44,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-11 13:22:40.184260",
+ "modified": "2025-01-13 12:22:27.379569",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Batch Plan",
