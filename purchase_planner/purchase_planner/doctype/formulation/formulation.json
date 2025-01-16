@@ -47,12 +47,12 @@
    "description": "amount used for the this batch size",
    "fieldname": "amount_used",
    "fieldtype": "Float",
-   "label": "Amount Used"
+   "label": "Packaging Used"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-13 12:22:52.808281",
+ "modified": "2025-01-16 12:47:35.837636",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Formulation",

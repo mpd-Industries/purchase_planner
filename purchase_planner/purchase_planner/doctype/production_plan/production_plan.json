@@ -9,7 +9,12 @@
   "amended_from",
   "stock_inventory",
   "timestamp",
-  "batches"
+  "batches",
+  "material_requirement_per_day",
+  "overall_materials_requirement",
+  "purchase_actions",
+  "route",
+  "published"
  ],
  "fields": [
   {
@@ -42,12 +47,40 @@
    "fieldtype": "Link",
    "label": "Stock Inventory",
    "options": "Day Stock"
+  },
+  {
+   "fieldname": "material_requirement_per_day",
+   "fieldtype": "HTML",
+   "label": "Material Requirement Per Day",
+   "read_only": 1
+  },
+  {
+   "fieldname": "overall_materials_requirement",
+   "fieldtype": "HTML",
+   "label": "Overall Materials Requirement"
+  },
+  {
+   "fieldname": "purchase_actions",
+   "fieldtype": "HTML",
+   "label": "Purchase Actions"
+  },
+  {
+   "fieldname": "route",
+   "fieldtype": "Data",
+   "label": "Route",
+   "unique": 1
+  },
+  {
+   "fieldname": "published",
+   "fieldtype": "Data",
+   "label": "Published"
   }
  ],
- "index_web_pages_for_search": 1,
+ "has_web_view": 1,
+ "is_published_field": "published",
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-15 18:10:36.433098",
+ "modified": "2025-01-16 13:12:34.385586",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Production Plan",
@@ -67,6 +100,7 @@
    "write": 1
   }
  ],
+ "route": "production-plan",
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": []
