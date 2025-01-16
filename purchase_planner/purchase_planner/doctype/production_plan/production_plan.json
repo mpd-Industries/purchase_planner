@@ -71,8 +71,9 @@
    "unique": 1
   },
   {
+   "default": "0",
    "fieldname": "published",
-   "fieldtype": "Data",
+   "fieldtype": "Check",
    "label": "Published"
   }
  ],
@@ -80,7 +81,7 @@
  "is_published_field": "published",
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-16 13:12:34.385586",
+ "modified": "2025-01-16 16:57:57.929332",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Production Plan",

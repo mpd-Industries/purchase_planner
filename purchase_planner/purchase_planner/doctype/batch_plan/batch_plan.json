@@ -3,11 +3,11 @@
  "allow_rename": 1,
  "creation": "2025-01-11 13:13:19.149555",
  "doctype": "DocType",
- "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "date",
-  "material",
+  "reactor",
+  "formulation",
   "batch_size",
   "processing_time",
   "remark",
@@ -18,12 +18,6 @@
    "fieldname": "date",
    "fieldtype": "Date",
    "label": "Date"
-  },
-  {
-   "fieldname": "material",
-   "fieldtype": "Link",
-   "label": "Material",
-   "options": "Material"
   },
   {
    "fetch_from": "reactor.size",
@@ -45,12 +39,23 @@
    "fieldname": "marketing_person",
    "fieldtype": "Data",
    "label": "Marketing Person"
+  },
+  {
+   "fieldname": "formulation",
+   "fieldtype": "Link",
+   "label": "Formulation",
+   "options": "Formulation"
+  },
+  {
+   "fieldname": "reactor",
+   "fieldtype": "Data",
+   "label": "Reactor"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-16 12:45:39.972119",
+ "modified": "2025-01-16 23:23:59.657120",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Batch Plan",

@@ -11,9 +11,7 @@ frappe.ui.form.on('Day Stock', {
                             file_url: file.file_url
                         },
                         callback: function (r) {
-                            console.log(r);
                             if (!r.exc) {
-                                console.log(r.message);
                                 const { updated_table, error_list } = r.message;
                                 
                                  // Log the response to verify the data
