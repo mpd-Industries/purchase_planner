@@ -6,17 +6,12 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "section_break_vauy",
   "amended_from",
   "stock_inventory",
   "timestamp",
   "batches"
  ],
  "fields": [
-  {
-   "fieldname": "section_break_vauy",
-   "fieldtype": "Section Break"
-  },
   {
    "fieldname": "amended_from",
    "fieldtype": "Link",
@@ -52,7 +47,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-11 13:43:02.093993",
+ "modified": "2025-01-15 18:10:36.433098",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Production Plan",

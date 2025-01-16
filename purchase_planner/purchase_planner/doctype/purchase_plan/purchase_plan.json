@@ -1,36 +1,27 @@
 {
  "actions": [],
- "allow_import": 1,
  "allow_rename": 1,
- "autoname": "format:{datetime}-{##}",
- "creation": "2025-01-11 12:57:50.061535",
+ "autoname": "format:PURCHASE-{production_plan}",
+ "creation": "2025-01-16 01:34:52.656760",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "datetime",
-  "table_fpim"
+  "production_plan"
  ],
  "fields": [
   {
-   "default": "Now",
-   "fieldname": "datetime",
-   "fieldtype": "Datetime",
-   "label": "Timestamp",
-   "read_only": 1
-  },
-  {
-   "fieldname": "table_fpim",
-   "fieldtype": "Table",
-   "label": "Stock for the day",
-   "options": "Stock Log"
+   "fieldname": "production_plan",
+   "fieldtype": "Link",
+   "label": "Production Plan",
+   "options": "Production Plan"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-14 12:38:10.305794",
+ "modified": "2025-01-16 01:37:04.448773",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
- "name": "Day Stock",
+ "name": "Purchase Plan",
  "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [

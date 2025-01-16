@@ -17,7 +17,8 @@
   "lead_time_import",
   "raw_material",
   "produced",
-  "packaging"
+  "packaging",
+  "tally_code"
  ],
  "fields": [
   {
@@ -82,7 +83,7 @@
    "fieldname": "unit_of_measure",
    "fieldtype": "Select",
    "label": "Unit of Measure",
-   "options": "kg\nnos",
+   "options": "kg\nnos\nltrs",
    "reqd": 1
   },
   {
@@ -97,11 +98,16 @@
    "fieldname": "packaging",
    "fieldtype": "Check",
    "label": "Packaging"
+  },
+  {
+   "fieldname": "tally_code",
+   "fieldtype": "Data",
+   "label": "Tally Code"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-13 12:07:40.686927",
+ "modified": "2025-01-16 10:52:18.221359",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Material",
