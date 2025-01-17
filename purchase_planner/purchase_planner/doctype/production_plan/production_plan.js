@@ -158,11 +158,115 @@ function send_batches_to_server(frm) {
         },
         callback: function (response) {
             console.log("Material requirements calculated:", response.message);
+
             if (response.message) {
-                // Update fields with returned data
-                // frm.set_value("material_requirement_per_day", response.message.material_requirement_per_day);
-                // frm.set_value("overall_materials_requirement", response.message.overall_materials_requirement);
+                // Populate Material Requirement Per Day, Overall Materials Requirement, and Reorder Actions tables
+                populate_tables(frm, response.message.material_requirements, response.message.reorders);
             }
         }
     });
+}
+
+// Function to populate Material Requirement Per Day, Overall Materials Requirement, and Reorder Actions tables
+function populate_tables(frm, materialRequirements, reorders) {
+    // Render Material Requirement Per Day Table
+    const renderMaterialRequirementPerDay = () => {
+        let html = `
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Material Code</th>
+                        <th>Quantity Used</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        materialRequirements.forEach(day => {
+            Object.entries(day.usage || {}).forEach(([material, qty]) => {
+                html += `
+                    <tr>
+                        <td>${day.date}</td>
+                        <td>${material}</td>
+                        <td>${qty.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+        });
+
+        html += `</tbody></table>`;
+        return html;
+    };
+
+    // Render Overall Materials Requirement Table
+    const renderOverallMaterialsRequirement = () => {
+        const totals = {};
+
+        materialRequirements.forEach(day => {
+            Object.entries(day.usage || {}).forEach(([material, qty]) => {
+                totals[material] = (totals[material] || 0) + qty;
+            });
+        });
+
+        let html = `
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Material Code</th>
+                        <th>Total Quantity Used</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        Object.entries(totals).forEach(([material, total]) => {
+            html += `
+                <tr>
+                    <td>${material}</td>
+                    <td>${total.toFixed(2)}</td>
+                </tr>
+            `;
+        });
+
+        html += `</tbody></table>`;
+        return html;
+    };
+
+    // Render Reorder Actions Table
+    const renderReorderActions = () => {
+        let html = `
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Material Code</th>
+                        <th>Quantity</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        reorders.forEach(reorder => {
+            Object.entries(reorder.reorders_placed || {}).forEach(([material, details]) => {
+                html += `
+                    <tr>
+                        <td>${reorder.date}</td>
+                        <td>${material}</td>
+                        <td>${details.qty.toFixed(2)}</td>
+                        <td>${details.reason}</td>
+                    </tr>
+                `;
+            });
+        });
+
+        html += `</tbody></table>`;
+        return html;
+    };
+
+    // Set the HTML for the respective fields
+    frm.set_df_property("material_requirement_per_day", "options", renderMaterialRequirementPerDay());
+    frm.set_df_property("overall_materials_requirement", "options", renderOverallMaterialsRequirement());
+    frm.set_df_property("purchase_actions", "options", renderReorderActions());
 }
