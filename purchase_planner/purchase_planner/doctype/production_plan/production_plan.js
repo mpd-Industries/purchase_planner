@@ -110,13 +110,11 @@ function fetch_previous_batches(frm) {
 frappe.ui.form.on("Batch Plan", {
     batches_add: function (frm) {
         console.log("Row added to batches table:", frm.doc.batches);
-        frappe.msgprint("A row has been added to the batches table.");
         debounce_send_batches_to_server(frm);
     },
 
     batches_remove: function (frm) {
         console.log("Row removed from batches table:", frm.doc.batches);
-        frappe.msgprint("A row has been removed from the batches table.");
         debounce_send_batches_to_server(frm);
     },
 
@@ -159,10 +157,11 @@ function send_batches_to_server(frm) {
             batches: frm.doc.batches
         },
         callback: function (response) {
+            console.log("Material requirements calculated:", response.message);
             if (response.message) {
                 // Update fields with returned data
-                frm.set_value("material_requirement_per_day", response.message.material_requirement_per_day);
-                frm.set_value("overall_materials_requirement", response.message.overall_materials_requirement);
+                // frm.set_value("material_requirement_per_day", response.message.material_requirement_per_day);
+                // frm.set_value("overall_materials_requirement", response.message.overall_materials_requirement);
             }
         }
     });

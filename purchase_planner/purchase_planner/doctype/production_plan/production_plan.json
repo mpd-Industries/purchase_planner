@@ -13,6 +13,7 @@
   "material_requirement_per_day",
   "overall_materials_requirement",
   "purchase_actions",
+  "order_arrivals",
   "route",
   "published"
  ],
@@ -75,13 +76,19 @@
    "fieldname": "published",
    "fieldtype": "Check",
    "label": "Published"
+  },
+  {
+   "fieldname": "order_arrivals",
+   "fieldtype": "HTML",
+   "label": "Order Arrivals",
+   "read_only": 1
   }
  ],
  "has_web_view": 1,
  "is_published_field": "published",
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-16 16:57:57.929332",
+ "modified": "2025-01-17 09:32:05.393272",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Production Plan",
