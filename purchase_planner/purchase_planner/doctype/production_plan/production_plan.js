@@ -1,5 +1,4 @@
 frappe.ui.form.on("Production Plan", {
-    // Triggered when the form is loaded
     onload: function (frm) {
         console.log("Production Plan loaded");
         toggle_batches_table(frm);
@@ -14,7 +13,6 @@ frappe.ui.form.on("Production Plan", {
         update_published_webpage(frm);
     },
 
-    // Triggered when the stock_inventory field changes
     stock_inventory: function (frm) {
         console.log("Stock Inventory changed:", frm.doc.stock_inventory);
         toggle_batches_table(frm);
@@ -24,7 +22,6 @@ frappe.ui.form.on("Production Plan", {
         }
     },
 
-    // Triggered before saving the document
     before_save: function (frm) {
         if (!frm.doc.route) {
             frm.set_value("route", generate_route());
@@ -34,7 +31,6 @@ frappe.ui.form.on("Production Plan", {
         }
     },
 
-    // Triggered after saving the document
     after_save: function (frm) {
         update_published_webpage(frm);
     }
@@ -69,12 +65,6 @@ function update_published_webpage(frm) {
             "options",
             `<a href="${webpageUrl}" target="_blank">${webpageUrl}</a>`
         );
-    } else {
-        frm.set_df_property(
-            "overall_materials_requirement",
-            "options",
-            "<p>The production plan is not published yet.</p>"
-        );
     }
 }
 
@@ -91,7 +81,6 @@ function fetch_previous_batches(frm) {
                 frm.clear_table("batches"); // Clear existing batches
                 response.message.forEach(batch => {
                     let child = frm.add_child("batches");
-                    // Map fields from response to child table
                     child.date = batch.date;
                     child.reactor = batch.reactor;
                     child.formulation = batch.formulation;
@@ -160,113 +149,57 @@ function send_batches_to_server(frm) {
             console.log("Material requirements calculated:", response.message);
 
             if (response.message) {
-                // Populate Material Requirement Per Day, Overall Materials Requirement, and Reorder Actions tables
                 populate_tables(frm, response.message.material_requirements, response.message.reorders);
             }
         }
     });
 }
 
-// Function to populate Material Requirement Per Day, Overall Materials Requirement, and Reorder Actions tables
+// Function to populate the child tables
 function populate_tables(frm, materialRequirements, reorders) {
-    // Render Material Requirement Per Day Table
-    const renderMaterialRequirementPerDay = () => {
-        let html = `
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Material Code</th>
-                        <th>Quantity Used</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        materialRequirements.forEach(day => {
-            Object.entries(day.usage || {}).forEach(([material, qty]) => {
-                html += `
-                    <tr>
-                        <td>${day.date}</td>
-                        <td>${material}</td>
-                        <td>${qty.toFixed(2)}</td>
-                    </tr>
-                `;
-            });
+    // Populate Material Requirement Per Day Table
+    frm.clear_table("material_requirement_per_day");
+    materialRequirements.forEach(day => {
+        Object.entries(day.usage || {}).forEach(([material, qty]) => {
+            let row = frm.add_child("material_requirement_per_day");
+            row.date = day.date;
+            row.material_code = material;
+            row.quantity_used = qty;
         });
+    });
+    frm.refresh_field("material_requirement_per_day");
 
-        html += `</tbody></table>`;
-        return html;
-    };
-
-    // Render Overall Materials Requirement Table
-    const renderOverallMaterialsRequirement = () => {
-        const totals = {};
-
-        materialRequirements.forEach(day => {
-            Object.entries(day.usage || {}).forEach(([material, qty]) => {
-                totals[material] = (totals[material] || 0) + qty;
-            });
+    // Populate Overall Materials Requirement Table
+    frm.clear_table("overall_materials_requirement");
+    const overallTotals = {};
+    materialRequirements.forEach(day => {
+        Object.entries(day.usage || {}).forEach(([material, qty]) => {
+            overallTotals[material] = (overallTotals[material] || 0) + qty;
         });
+    });
+    Object.entries(overallTotals).forEach(([material, totalQty]) => {
+        let row = frm.add_child("overall_materials_requirement");
+        row.material_code = material;
+        row.total_quantity = totalQty;
+        row.total_reorder_quantity = reorders.reduce((total, reorder) => {
+            if (reorder.reorders_placed[material]) {
+                return total + reorder.reorders_placed[material].qty;
+            }
+            return total;
+        }, 0);
+    });
+    frm.refresh_field("overall_materials_requirement");
 
-        let html = `
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Material Code</th>
-                        <th>Total Quantity Used</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        Object.entries(totals).forEach(([material, total]) => {
-            html += `
-                <tr>
-                    <td>${material}</td>
-                    <td>${total.toFixed(2)}</td>
-                </tr>
-            `;
+    // Populate Purchase Actions Table
+    frm.clear_table("purchase_actions");
+    reorders.forEach(reorder => {
+        Object.entries(reorder.reorders_placed || {}).forEach(([material, details]) => {
+            let row = frm.add_child("purchase_actions");
+            row.date = reorder.date;
+            row.material_code = material;
+            row.quantity = details.qty;
+            row.reason = details.reason;
         });
-
-        html += `</tbody></table>`;
-        return html;
-    };
-
-    // Render Reorder Actions Table
-    const renderReorderActions = () => {
-        let html = `
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Material Code</th>
-                        <th>Quantity</th>
-                        <th>Reason</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        reorders.forEach(reorder => {
-            Object.entries(reorder.reorders_placed || {}).forEach(([material, details]) => {
-                html += `
-                    <tr>
-                        <td>${reorder.date}</td>
-                        <td>${material}</td>
-                        <td>${details.qty.toFixed(2)}</td>
-                        <td>${details.reason}</td>
-                    </tr>
-                `;
-            });
-        });
-
-        html += `</tbody></table>`;
-        return html;
-    };
-
-    // Set the HTML for the respective fields
-    frm.set_df_property("material_requirement_per_day", "options", renderMaterialRequirementPerDay());
-    frm.set_df_property("overall_materials_requirement", "options", renderOverallMaterialsRequirement());
-    frm.set_df_property("purchase_actions", "options", renderReorderActions());
+    });
+    frm.refresh_field("purchase_actions");
 }
