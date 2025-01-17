@@ -1,7 +1,167 @@
 {% extends "templates/web.html" %}
 
 {% block page_content %}
-<h1>{{ title |e }}</h1>
-{% endblock %}
+<div class="production-plan-page">
+    <h1>{{ title | e }}</h1>
 
-<!-- this is a sample default web page template -->
+    <!-- Production Plan Summary -->
+    <div class="plan-summary">
+        <h2>Production Plan Details</h2>
+        <p><strong>Route:</strong> {{ doc.route }}</p>
+        <p><strong>Published:</strong> {{ "Yes" if doc.published else "No" }}</p>
+        <p><strong>Timestamp:</strong> {{ doc.timestamp }}</p>
+    </div>
+
+    <!-- Batches Table -->
+    <div class="batches-section">
+        <h2>Batches</h2>
+        {% if doc.batches %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Reactor</th>
+                    <th>Formulation</th>
+                    <th>Batch Size</th>
+                    <th>Processing Time</th>
+                    <th>Remark</th>
+                    <th>Marketing Person</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for batch in doc.batches %}
+                <tr>
+                    <td>{{ batch.date }}</td>
+                    <td>{{ batch.reactor }}</td>
+                    <td>{{ batch.formulation }}</td>
+                    <td>{{ batch.batch_size }}</td>
+                    <td>{{ batch.processing_time }}</td>
+                    <td>{{ batch.remark }}</td>
+                    <td>{{ batch.marketing_person }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No batches available.</p>
+        {% endif %}
+    </div>
+
+    <!-- Material Requirement Per Day -->
+    <div class="material-requirement-section">
+        <h2>Material Requirement Per Day</h2>
+        {% if doc.material_requirement_per_day %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Material Code</th>
+                    <th>Quantity Used</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in doc.material_requirement_per_day %}
+                <tr>
+                    <td>{{ row.date }}</td>
+                    <td>{{ row.material_code }}</td>
+                    <td>{{ row.quantity_used }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No material requirements available.</p>
+        {% endif %}
+    </div>
+
+    <!-- Overall Materials Requirement -->
+    <div class="overall-requirement-section">
+        <h2>Overall Materials Requirement</h2>
+        {% if doc.overall_materials_requirement %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Material Code</th>
+                    <th>Total Quantity Used</th>
+                    <th>Total Reorder Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in doc.overall_materials_requirement %}
+                <tr>
+                    <td>{{ row.material_code }}</td>
+                    <td>{{ row.total_quantity }}</td>
+                    <td>{{ row.total_reorder_quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No overall materials requirement available.</p>
+        {% endif %}
+    </div>
+
+    <!-- Purchase Actions -->
+    <div class="purchase-actions-section">
+        <h2>Purchase Actions</h2>
+        {% if doc.purchase_actions %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Material Code</th>
+                    <th>Quantity</th>
+                    <th>Reason</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in doc.purchase_actions %}
+                <tr>
+                    <td>{{ row.date }}</td>
+                    <td>{{ row.material_code }}</td>
+                    <td>{{ row.quantity }}</td>
+                    <td>{{ row.reason }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No purchase actions available.</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .production-plan-page {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    .production-plan-page h1,
+    .production-plan-page h2 {
+        color: #2c3e50;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    .table th,
+    .table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    .plan-summary p {
+        margin: 5px 0;
+    }
+</style>
+{% endblock %}
