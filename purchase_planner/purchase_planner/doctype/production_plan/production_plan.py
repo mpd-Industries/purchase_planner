@@ -378,7 +378,6 @@ def _build_output(daily_log):
         day_data = daily_log[d]
 
         # Record usage and ending_stock
-        print(day_data)
         material_requirements.append({
             "date": date_str,
             "usage": dict(day_data["material_usage"]),
