@@ -63,8 +63,10 @@ def upload_stock_excel(file_url):
         else:
             # Add missing Tally Code to the error list
             error_list.append(tally_code)
+            
 
     # Return the processed data
+    error_list = [None if pd.isna(code) else code for code in error_list]
     return {
         "updated_table": updated_table,
         "error_list": error_list
