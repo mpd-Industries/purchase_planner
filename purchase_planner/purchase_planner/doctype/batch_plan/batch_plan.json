@@ -3,32 +3,39 @@
  "allow_rename": 1,
  "creation": "2025-01-11 13:13:19.149555",
  "doctype": "DocType",
+ "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "date",
-  "reactor",
   "formulation",
-  "batch_size",
+  "reactor",
+  "date",
   "processing_time",
-  "remark",
-  "marketing_person"
+  "batch_size",
+  "marketing_person",
+  "remark"
  ],
  "fields": [
   {
    "fieldname": "date",
    "fieldtype": "Date",
-   "label": "Date"
+   "in_list_view": 1,
+   "label": "Start Date",
+   "reqd": 1
   },
   {
    "fetch_from": "reactor.size",
    "fieldname": "batch_size",
    "fieldtype": "Data",
-   "label": "Batch Size (Kg)"
+   "in_list_view": 1,
+   "label": "Batch Size (Kg)",
+   "reqd": 1
   },
   {
    "fieldname": "processing_time",
    "fieldtype": "Int",
-   "label": "Processing Time (Hours)"
+   "label": "Processing Time (Hours)",
+   "non_negative": 1,
+   "reqd": 1
   },
   {
    "fieldname": "remark",
@@ -43,19 +50,23 @@
   {
    "fieldname": "formulation",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Formulation",
-   "options": "Formulation"
+   "options": "Formulation",
+   "reqd": 1
   },
   {
    "fieldname": "reactor",
    "fieldtype": "Data",
-   "label": "Reactor"
+   "in_list_view": 1,
+   "label": "Reactor",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-16 23:23:59.657120",
+ "modified": "2025-01-20 20:22:59.291459",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Batch Plan",

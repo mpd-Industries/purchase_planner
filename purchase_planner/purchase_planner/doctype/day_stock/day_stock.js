@@ -5,6 +5,7 @@ frappe.ui.form.on('Day Stock', {
             new frappe.ui.FileUploader({
                 folder: 'Home',
                 on_success: function (file) {
+                    console.log(file);
                     frappe.call({
                         method: 'purchase_planner.purchase_planner.doctype.day_stock.day_stock.upload_stock_excel',
                         args: {

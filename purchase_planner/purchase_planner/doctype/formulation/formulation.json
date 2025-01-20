@@ -27,7 +27,7 @@
    "fieldtype": "Float",
    "label": "Batch Size",
    "placeholder": "default batch size for this formulation",
-   "precision": "2",
+   "precision": "5",
    "reqd": 1
   },
   {
@@ -52,7 +52,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-16 12:47:35.837636",
+ "modified": "2025-01-20 20:04:38.494274",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Formulation",
