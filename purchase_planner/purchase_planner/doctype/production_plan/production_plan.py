@@ -19,16 +19,26 @@ def upload_batches(file_url):
         file_path,
         sheet_name="Batches",
     )
-    # reactor	date	processing_time	formulation	batch size	remark	marketing_person
 
-    # Drop rows where date , processing_time, formulation, batch size are missing
+    # Drop rows where date, processing_time, formulation, batch_size are missing
     batch_df = batch_df.dropna(subset=["date", "processing_time", "formulation", "batch_size"])
-   
+
+    # Convert date column to datetime
+    try:
+        batch_df["date"] = pd.to_datetime(batch_df["date"], dayfirst=True, errors="coerce")
+    except Exception as e:
+        frappe.throw(f"Error converting dates: {str(e)}")
+
+    # Identify and print invalid date rows
+    invalid_dates = batch_df[batch_df["date"].isna()]
+    if not invalid_dates.empty:
+        frappe.throw(f"Invalid date rows found:\n{invalid_dates.to_string(index=False)}")
+
+    # Format the date column as YYYY-MM-DD
     batch_df["date"] = batch_df["date"].dt.strftime("%Y-%m-%d")
-    
-    # remove nans from the dataframe
+
+    # Remove NaNs and prepare the response data
     batch_df = batch_df.fillna("")
-    # Prepare the response data
     batch_list = batch_df.to_dict(orient="records")
     return batch_list
 
