@@ -3,6 +3,44 @@ import frappe
 from frappe.website.website_generator import WebsiteGenerator
 from datetime import datetime, timedelta
 from collections import defaultdict
+import os
+import pandas as pd
+
+@frappe.whitelist()
+def upload_batches(file_url):
+    file_path = frappe.utils.get_site_path(file_url.strip("/"))
+
+    # Verify the file exists
+    if not os.path.exists(file_path):
+        frappe.throw(f"File not found: {file_path}")
+
+    # Load the Excel file
+    batch_df = pd.read_excel(
+        file_path,
+        sheet_name="Batches",
+    )
+
+    # Drop rows where date, processing_time, formulation, batch_size are missing
+    batch_df = batch_df.dropna(subset=["date", "processing_time", "formulation", "batch_size"])
+
+    # Convert date column to datetime
+    try:
+        batch_df["date"] = pd.to_datetime(batch_df["date"], dayfirst=True, errors="coerce")
+    except Exception as e:
+        frappe.throw(f"Error converting dates: {str(e)}")
+
+    # Identify and print invalid date rows
+    invalid_dates = batch_df[batch_df["date"].isna()]
+    if not invalid_dates.empty:
+        frappe.throw(f"Invalid date rows found:\n{invalid_dates.to_string(index=False)}")
+
+    # Format the date column as YYYY-MM-DD
+    batch_df["date"] = batch_df["date"].dt.strftime("%Y-%m-%d")
+
+    # Remove NaNs and prepare the response data
+    batch_df = batch_df.fillna("")
+    batch_list = batch_df.to_dict(orient="records")
+    return batch_list
 
 @frappe.whitelist()
 def calculate_material_requirements(stock_inventory, batches):
@@ -26,8 +64,8 @@ def calculate_material_requirements(stock_inventory, batches):
     day_stock_dict = {row["material_code"]: row for row in day_stock_doc.get("table_fpim", [])}
 
     # Material data: lead_time, reorder_quantity_kg, safety_stock, etc.
-    existing_mat_codes = list(day_stock_dict.keys())
-    material_info_map = _fetch_material_info(existing_mat_codes)
+   
+    
 
     # ----------------------------------------------------------------
     # 2) PARSE & FILTER BATCHES
@@ -53,6 +91,18 @@ def calculate_material_requirements(stock_inventory, batches):
     # ----------------------------------------------------------------
     formulation_ids = [b["formulation"] for b in filtered_batches]
     formulations = get_formulations(formulation_ids)
+    materials_in_formulations = set()
+    for f in formulations:
+    
+        materials_in_formulations.update([r["material_code"] for r in f.get("ratios", [])])
+    existing_mat_codes = list(day_stock_dict.keys())
+    combined_mat_codes = list(materials_in_formulations.union(existing_mat_codes))
+    
+    
+    material_info_map = _fetch_material_info(combined_mat_codes)
+    
+        
+    
     formulation_map = {f["formulation_id"]: f for f in formulations}
 
     # ----------------------------------------------------------------
@@ -61,6 +111,8 @@ def calculate_material_requirements(stock_inventory, batches):
     current_stock = {
         mat_code: row.get("stock", 0.0) or 0.0 for mat_code, row in day_stock_dict.items()
     }
+    
+    opening_stock = current_stock.copy()
 
     # Helper objects to track daily events
     reactor_occupancy = defaultdict(set)     # e.g. reactor_occupancy[date] = set(reactors)
@@ -120,7 +172,7 @@ def calculate_material_requirements(stock_inventory, batches):
     # ----------------------------------------------------------------
     # 6) BUILD THE FINAL OUTPUT
     # ----------------------------------------------------------------
-    return _build_output(daily_log)
+    return _build_output(daily_log , material_info_map, opening_stock)
 
 
 # ----------------------------------------------------------------
@@ -137,6 +189,7 @@ def _fetch_material_info(mat_codes):
         filters={"material_code": ["in", mat_codes]},
         fields=[
             "material_code",
+            "material_name",
             "lead_time",
             "reorder_quantity_kg",
             "safety_stock",
@@ -152,6 +205,7 @@ def _fetch_material_info(mat_codes):
             "reorder_qty": mat.get("reorder_quantity_kg", 0) or 0,
             "safety_stock": mat.get("safety_stock", 0) or 0,
             "uom": mat.get("unit_of_measure", "kg"),
+            "material_name": mat.get("material_name", "Unknown"),
         }
     return info_map
 
@@ -225,15 +279,15 @@ def _consume_materials_for_batch(
     # Determine how many calendar days the reactor is occupied
     processing_days = _calculate_processing_days(processing_time)
 
-    # Check for reactor double-booking
-    for offset in range(processing_days):
-        day_check = current_day + timedelta(days=offset)
-        if reactor in reactor_occupancy[day_check]:
-            frappe.throw(
-                f"Reactor '{reactor}' is double-booked on {day_check}.",
-                title="Scheduling Conflict",
-            )
-        reactor_occupancy[day_check].add(reactor)
+    # # Check for reactor double-booking
+    # for offset in range(processing_days):
+    #     day_check = current_day + timedelta(days=offset)
+    #     if reactor in reactor_occupancy[day_check]:
+    #         frappe.throw(
+    #             f"Reactor '{reactor}' is double-booked on {day_check}.",
+    #             title="Scheduling Conflict",
+    #         )
+    #     reactor_occupancy[day_check].add(reactor)
 
     # Fetch the formulation
     if formulation_id not in formulation_map:
@@ -364,55 +418,107 @@ def _place_purchase_order(
         reorder_arrivals[arrival_day][mat_code]["reason"] += f"; {reason}"
 
 
-def _build_output(daily_log):
+def _build_output(daily_log, material_info_map, opening_stock):
     """
-    Assemble final data for 'material_requirements' and 'reorders' from daily_log.
-    We also remove the 'ending_stock' from 'material_requirements' if needed.
+    Assemble final data for 'material_requirements', 'reorders', and 'overall_material_requirements' from daily_log.
+    Material requirements include detailed material info, and reorders are restructured as lists.
     """
     sorted_days = sorted(daily_log.keys())
     material_requirements = []
     reorders_list = []
+    material_totals = {}
 
     for d in sorted_days:
         date_str = d.strftime("%Y-%m-%d")
         day_data = daily_log[d]
 
-        # Record usage and ending_stock
+        # Record material usage
+        usage_list = []
+        for material_code, usage in day_data["material_usage"].items():
+            material_info = material_info_map.get(material_code, {})
+            material_name = material_info.get("material_name", material_code)
+            safety_stock = material_info.get("safety_stock", 0)
+
+            # Update material totals
+            if material_code not in material_totals:
+                material_totals[material_code] = {
+                    "materialCode": material_code,
+                    "materialName": material_name,
+                    "currentStock": opening_stock.get(material_code, 0),
+                    "totalUsed": 0,
+                    "totalReorder": 0,
+                    "safetyStock": safety_stock
+                }
+            material_totals[material_code]["totalUsed"] += usage
+
+            usage_list.append({
+                "materialCode": material_code,
+                "materialName": material_name,
+                "usage": usage
+            })
         material_requirements.append({
             "date": date_str,
-            "usage": dict(day_data["material_usage"]),
-            "ending_stock": day_data["ending_stock"]
+            "materials": usage_list
         })
 
         # Record reorders placed/arrived
-        placed_dict = {m: data for m, data in day_data["reorders_placed"].items()}
-        arrived_dict = {m: data for m, data in day_data["reorders_arrived"].items()}
-        production_completed = dict(day_data["production_completed"])
+        placed_list = []
+        for material_code, reorder_data in day_data["reorders_placed"].items():
+            material_info = material_info_map.get(material_code, {})
+            material_name = material_info["material_name"]
+
+            # Update material totals
+            if material_code not in material_totals:
+                material_totals[material_code] = {
+                    "materialCode": material_code,
+                    "materialName": material_name,
+                    "currentStock": opening_stock.get(material_code, 0),
+                    "totalUsed": 0,
+                    "totalReorder": 0,
+                    "safetyStock": material_info.get("safety_stock", 0)
+                }
+            material_totals[material_code]["totalReorder"] += reorder_data["qty"]
+
+            placed_list.append({
+                "materialCode": material_code,
+                "materialName": material_name,
+                "qty": reorder_data["qty"],
+                "reason": reorder_data["reason"]
+            })
+        arrived_list = [
+            {
+                "materialCode": material_code,
+                "qty": reorder_data["qty"],
+                "reason": reorder_data["reason"]
+            }
+            for material_code, reorder_data in day_data["reorders_arrived"].items()
+        ]
+        production_completed_list = [
+            {
+                "materialCode": material_code,
+                "qty": qty
+            }
+            for material_code, qty in day_data["production_completed"].items()
+        ]
 
         reorders_list.append({
             "date": date_str,
-            "reorders_placed": placed_dict,
-            "reorders_arrived": arrived_dict,
-            "production_completed": production_completed
+            "reorders_placed": placed_list,
+            "reorders_arrived": arrived_list,
+            "production_completed": production_completed_list
         })
 
-    # If you truly do NOT want 'ending_stock' in the 'material_requirements', remove it:
-    # (But if you want it, just skip this step.)
-    
-    
-    
-    
-    material_requirements_slim = []
-    for entry in material_requirements:
-        slim_entry = {
-            "date": entry["date"],
-            "usage": entry["usage"]
-        }
-        material_requirements_slim.append(slim_entry)
+    # Filter out empty entries
+    material_requirements = list(filter(lambda x: len(x["materials"]) > 0, material_requirements))
+    reorders_list = list(filter(lambda x: len(x["reorders_placed"]) > 0, reorders_list))
+
+    # Prepare overall material requirements
+    overall_material_requirements = list(material_totals.values())
 
     return {
-        "material_requirements": material_requirements_slim,
+        "material_requirements": material_requirements,
         "reorders": reorders_list,
+        "overall_material_requirements": overall_material_requirements,
     }
 
 

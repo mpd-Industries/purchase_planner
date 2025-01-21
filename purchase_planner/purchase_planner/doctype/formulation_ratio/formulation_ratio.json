@@ -14,6 +14,7 @@
   {
    "fieldname": "material_code",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Material Code",
    "options": "Material",
    "reqd": 1
@@ -23,14 +24,14 @@
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Quantity",
-   "precision": "2",
+   "precision": "5",
    "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-13 12:30:48.612080",
+ "modified": "2025-01-20 23:13:04.062979",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "formulation_ratio",
