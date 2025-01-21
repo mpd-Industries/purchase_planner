@@ -11,7 +11,8 @@
   "current_stock",
   "total_quantity",
   "total_reorder_quantity",
-  "safety_stock"
+  "safety_stock",
+  "batches"
  ],
  "fields": [
   {
@@ -51,12 +52,17 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Safety Stock"
+  },
+  {
+   "fieldname": "batches",
+   "fieldtype": "Long Text",
+   "label": "Batches"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-20 23:14:34.427554",
+ "modified": "2025-01-21 17:54:46.946689",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Overall Materials Requirement",

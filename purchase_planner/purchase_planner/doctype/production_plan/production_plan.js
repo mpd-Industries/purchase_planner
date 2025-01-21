@@ -238,6 +238,7 @@ function populate_tables(frm, response) {
             row.material_code = material.materialCode;
             row.material_name = material.materialName;
             row.quantity_used = material.usage;
+            row.batches = material.usageDetails
         });
     });
     frm.refresh_field("material_requirement_per_day");
@@ -461,6 +462,7 @@ function populate_tables(frm, response) {
         row.total_quantity = item.totalUsed;
         row.total_reorder_quantity = item.totalReorder;
         row.safety_stock = item.safetyStock;
+        row.batches = item.usageDetails
     });
     frm.refresh_field("overall_materials_requirement");
 
