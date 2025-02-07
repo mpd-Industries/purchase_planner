@@ -232,10 +232,17 @@ function generateCSV(data) {
         });
     });
 
-    // Extract unique dates for columns
+    // Extract unique dates from BOTH material_requirements & prev_material_requirements
     let uniqueDates = new Set();
+    
+    // Collect dates from material_requirements
     data.material_requirements.forEach(entry => uniqueDates.add(entry.date));
-    uniqueDates = Array.from(uniqueDates).sort(); // Sort dates for correct order
+
+    // Collect dates from prev_material_requirements
+    data.prev_material_requirements.forEach(entry => uniqueDates.add(entry.date));
+
+    // Convert set to sorted array
+    uniqueDates = Array.from(uniqueDates).sort(); // Ensure dates are in order
 
     // Populate usage from material_requirements
     data.material_requirements.forEach(entry => {
@@ -270,15 +277,21 @@ function generateCSV(data) {
     });
 
     // Compute deltas and total used
-    materialsMap.forEach(material => {
-        let prevUsage = 0;
+    materialsMap.forEach((material, materialCode) => { // Fixed 'code' issue by using 'materialCode'
         uniqueDates.forEach(date => {
             if (!material.usage[date]) {
-                material.usage[date] = { usage: 0, prevUsage: prevUsage, delta: -prevUsage };
-            } else {
-                material.usage[date].delta = material.usage[date].usage - material.usage[date].prevUsage;
+                // If there is no recorded usage for this date, initialise with zero
+                material.usage[date] = { usage: 0, prevUsage: 0, delta: 0 };
             }
-            prevUsage = material.usage[date].usage;
+
+            // Only assign prevUsage if there was a previous record for the exact date
+            let prevEntry = data.prev_material_requirements.find(p => p.date === date && p.material_code === materialCode);
+            if (prevEntry) {
+                material.usage[date].prevUsage = prevEntry.quantity_used;
+            }
+
+            // Compute delta correctly (rounded to 2 decimal places)
+            material.usage[date].delta = parseFloat((material.usage[date].usage - material.usage[date].prevUsage).toFixed(2));
             material.totalUsed += material.usage[date].usage;
         });
 
@@ -295,9 +308,9 @@ function generateCSV(data) {
 
     // Populate rows with material data
     console.log("materialsMap:", materialsMap);
-    materialsMap.forEach((material, code) => {
+    materialsMap.forEach((material, materialCode) => {
         let row = [
-            code,
+            materialCode,
             material.materialName,
             material.safetyStock,
             material.currentStock,
@@ -318,9 +331,9 @@ function generateCSV(data) {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    // todays date in string format
-    const today = new Date().toISOString();
-    // use that for the filename
+    // Generate today's date in string format
+    const today = new Date().toISOString().split("T")[0]; // Format YYYY-MM-DD
+    // Use that for the filename
     link.setAttribute("download", `Material_Usage_Report_${today}.csv`);
     document.body.appendChild(link);
     link.click();
