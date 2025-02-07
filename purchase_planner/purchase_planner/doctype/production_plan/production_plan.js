@@ -46,6 +46,7 @@ frappe.ui.form.on("Production Plan", {
                             child.marketing_person = batch.marketing_person;
                         });
                     }
+                    frm.refresh_field("batches");
                 }
             });
         }
