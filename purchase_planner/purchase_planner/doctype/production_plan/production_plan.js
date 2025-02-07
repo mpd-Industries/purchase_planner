@@ -287,6 +287,7 @@ function generateCSV(data) {
     csvContent += header.join(",") + "\n";
 
     // Populate rows with material data
+    console.log("materialsMap:", materialsMap);
     materialsMap.forEach((material, code) => {
         let row = [
             code,
