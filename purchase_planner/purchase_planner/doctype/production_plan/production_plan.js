@@ -47,6 +47,7 @@ frappe.ui.form.on("Production Plan", {
                         });
                     }
                     frm.refresh_field("batches");
+
                 }
             });
         }
@@ -101,7 +102,6 @@ function fetch_previous_batches(frm) {
                     child.marketing_person = batch.marketing_person;
                 });
                 frm.refresh_field("batches");
-                // frappe.msgprint("Previous batches have been populated.");
             }
         }
     });
