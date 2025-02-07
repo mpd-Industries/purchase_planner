@@ -13,6 +13,7 @@ frappe.ui.form.on("Production Plan", {
         }
     },
     download_production_plan: function (frm) {
+        frm.save()
         calculate_material_requirements(frm).then((message) => {
             if (message) {
                 generateCSV(message);
@@ -47,6 +48,7 @@ frappe.ui.form.on("Production Plan", {
                         });
                     }
                     frm.refresh_field("batches");
+                    debounce_send_batches_to_server(frm);
 
                 }
             });
@@ -85,7 +87,9 @@ function fetch_previous_batches(frm) {
     frappe.call({
         method: "purchase_planner.purchase_planner.doctype.production_plan.production_plan.get_previous_batches",
         args: {
-            stock_inventory: frm.doc.stock_inventory
+            stock_inventory: frm.doc.stock_inventory,
+            timestamp: frm.doc.timestamp
+
         },
         callback: function (response) {
             if (response.message) {
@@ -102,6 +106,7 @@ function fetch_previous_batches(frm) {
                     child.marketing_person = batch.marketing_person;
                 });
                 frm.refresh_field("batches");
+                send_batches_to_server(frm);
             }
         }
     });
@@ -163,11 +168,13 @@ function calculate_material_requirements(frm) {
         console.log("No stock inventory or batches to send to the server.");
         return;
     }
+    // frm.save()
     return frappe.call({
         method: "purchase_planner.purchase_planner.doctype.production_plan.production_plan.calculate_material_requirements",
         args: {
             stock_inventory: frm.doc.stock_inventory,
-            batches: frm.doc.batches
+            batches: frm.doc.batches,
+            timestamp: frm.doc.timestamp
         }
     }).then(response => {
         console.log("Material requirements calculated:", response.message);

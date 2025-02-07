@@ -51,7 +51,7 @@ def upload_batches(file_url):
 
 
 @frappe.whitelist()
-def calculate_material_requirements(stock_inventory, batches):
+def calculate_material_requirements(stock_inventory, batches, timestamp):
     """
     Simulates day-by-day consumption and reordering of materials based on planned batches.
     """
@@ -160,7 +160,7 @@ def calculate_material_requirements(stock_inventory, batches):
     # ----------------------------------------------------------------
     # 6) BUILD THE FINAL OUTPUT
     # ----------------------------------------------------------------
-    return _build_output(daily_log, material_info_map, opening_stock)
+    return _build_output(daily_log, material_info_map, opening_stock, timestamp)
 
 
 # ----------------------------------------------------------------
@@ -296,7 +296,7 @@ def _consume_materials_for_batch(
     # daily_log[current_day]["production_completed"][formulation_id] += actual_batch_size
 
 
-def _build_output(daily_log, material_info_map, opening_stock):
+def _build_output(daily_log, material_info_map, opening_stock, timestamp):
     """
     Assemble final data for 'material_requirements', 'reorders', and 'overall_material_requirements'
     from daily_log. Includes usage details in a new field.
@@ -380,7 +380,7 @@ def _build_output(daily_log, material_info_map, opening_stock):
     return {
         "material_requirements": material_requirements,
         "overall_material_requirements": overall_material_requirements,
-        "prev_material_requirements": get_prev_material_requirement_per_day(),
+        "prev_material_requirements": get_prev_material_requirement_per_day(timestamp),
     }
 
 
@@ -388,13 +388,15 @@ def _build_output(daily_log, material_info_map, opening_stock):
 # Example of your other existing function
 # ----------------------------------------------------------------
 
-def get_prev_material_requirement_per_day():
+def get_prev_material_requirement_per_day(timestamp):
     last_plan = frappe.get_all(
         "Production Plan",
+        filters={"timestamp": ["!=", timestamp]},
         fields=["name"],
         order_by="creation desc",
         limit_page_length=1,
     )
+    print(last_plan)
     if last_plan:
         prev_material_requirement_per_day = frappe.get_all(
             "Material Requirement Per Day",
@@ -407,13 +409,15 @@ def get_prev_material_requirement_per_day():
     
 
 @frappe.whitelist()
-def get_previous_batches(stock_inventory):
+def get_previous_batches(stock_inventory, timestamp):
     last_plan = frappe.get_all(
         "Production Plan",
         fields=["name"],
+        filters={"timestamp": ["!=", timestamp]},
         order_by="creation desc",
         limit_page_length=1,
     )
+    print(last_plan)
     if last_plan:
         batches = frappe.get_all(
             "Batch Plan",
