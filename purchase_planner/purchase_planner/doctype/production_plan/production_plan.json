@@ -10,10 +10,10 @@
   "timestamp",
   "stock_inventory",
   "production_plan_excel_sheet",
+  "download_production_plan",
   "batches",
   "material_requirement_per_day",
-  "overall_materials_requirement",
-  "purchase_actions"
+  "overall_materials_requirement"
  ],
  "fields": [
   {
@@ -63,21 +63,19 @@
    "read_only": 1
   },
   {
-   "fieldname": "purchase_actions",
-   "fieldtype": "Table",
-   "label": "Purchase Actions",
-   "options": "Purchase Actions",
-   "read_only": 1
-  },
-  {
    "fieldname": "production_plan_excel_sheet",
    "fieldtype": "Attach",
    "label": "Production Plan Excel Sheet"
+  },
+  {
+   "fieldname": "download_production_plan",
+   "fieldtype": "Button",
+   "label": "Download Production Plan"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-20 20:14:43.550650",
+ "modified": "2025-02-07 16:14:20.371529",
  "modified_by": "Administrator",
  "module": "Purchase Planner",
  "name": "Production Plan",
